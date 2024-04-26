@@ -5,7 +5,7 @@ RUN mvn dependency:go-offline
 COPY src ./src
 RUN mvn package
 
-FROM adoptopenjdk:17-jre-slim
+FROM ubuntu/jre:8-22.04_edge
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 9090

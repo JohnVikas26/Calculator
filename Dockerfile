@@ -1,7 +1,6 @@
-# Use Ubuntu 22.04 as the base image
-FROM ubuntu:22.04
+FROM ubuntu:22.04 AS builder
 
-# Update package lists and install OpenJDK
+# Install Java JDK
 RUN apt-get update && apt-get install -y openjdk-8-jdk
 
 # Set the working directory
@@ -13,6 +12,15 @@ ADD HelloWorld.java .
 # Compile the Java source file
 RUN javac -source 8 -target 8 HelloWorld.java -d .
 
-# Define the command to run the Java application
-CMD ["java", "HelloWorld"]
+# Second stage of the build
+FROM ubuntu/jre:8-22.04_edge
+
+# Set the working directory
+WORKDIR /
+
+# Copy the compiled class file from the builder stage
+COPY --from=builder /app/HelloWorld.class .
+
+# Set the command to run when the container starts
+CMD [ "HelloWorld" ]
 

@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y openjdk-8-jdk
 WORKDIR /app
 
 # Add the Java source file
-ADD HelloWorld.java .
+ADD src/HelloWorld.java .
 
 # Compile the Java source file
 RUN javac -source 8 -target 8 HelloWorld.java -d .

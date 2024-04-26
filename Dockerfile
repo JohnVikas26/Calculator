@@ -16,8 +16,8 @@ COPY src ./src
 # Build the application
 RUN mvn package
 
-# Use a lightweight JDK image for the final stage
-FROM openjdk:17-jre-slim
+# Use the Ubuntu base image for the final stage
+FROM ubuntu:22.04
 
 # Set the working directory in the final stage
 WORKDIR /app

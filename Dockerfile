@@ -1,26 +1,33 @@
-FROM ubuntu:22.04 AS builder
+# Use the official Maven image as the builder stage
+FROM maven:3.8.4-openjdk-17-slim AS builder
 
-# Install Java JDK
-RUN apt-get update && apt-get install -y openjdk-8-jdk
-
-# Set the working directory
+# Set the working directory in the builder stage
 WORKDIR /app
 
-# Add the Java source file
-ADD src/HelloWorld.java .
+# Copy the Maven project file to the builder stage
+COPY pom.xml .
 
-# Compile the Java source file
-RUN javac -source 8 -target 8 HelloWorld.java -d .
+# Download dependencies for caching
+RUN mvn dependency:go-offline
 
-# Second stage of the build
-FROM ubuntu/jre:8-22.04_edge
+# Copy the source code to the builder stage
+COPY src ./src
 
-# Set the working directory
-WORKDIR /
+# Build the application
+RUN mvn package
 
-# Copy the compiled class file from the builder stage
-COPY --from=builder /app/HelloWorld.class .
+# Use a lightweight JDK image for the final stage
+FROM adoptopenjdk:17-jre-hotspot-slim
 
-# Set the command to run when the container starts
-CMD [ "HelloWorld" ]
+# Set the working directory in the final stage
+WORKDIR /app
+
+# Copy the JAR file built in the builder stage to the final stage
+COPY --from=builder /app/target/*.jar app.jar
+
+# Expose port 8080
+EXPOSE 8080
+
+# Define the command to run the application
+CMD ["java", "-jar", "app.jar"]
 

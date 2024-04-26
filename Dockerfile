@@ -17,7 +17,7 @@ COPY src ./src
 RUN mvn package
 
 # Use a lightweight JDK image for the final stage
-FROM adoptopenjdk:17-jre-hotspot-slim
+FROM openjdk:17-jre-slim
 
 # Set the working directory in the final stage
 WORKDIR /app

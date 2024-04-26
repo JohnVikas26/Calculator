@@ -5,9 +5,9 @@ RUN mvn dependency:go-offline
 COPY src ./src
 RUN mvn package
 
-FROM adoptopenjdk:17-jre-hotspot-slim
+FROM adoptopenjdk:17-jre-slim
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
-EXPOSE 8080
+EXPOSE 9090
 CMD ["java", "-jar", "app.jar"]
 

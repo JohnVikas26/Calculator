@@ -1,4 +1,5 @@
-FROM maven:3.8.4-openjdk-17-slim AS build
+FROM ubuntu:22.04 AS builder
+RUN apt-get update && apt-get install -y openjdk-8-jdk
 WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline
